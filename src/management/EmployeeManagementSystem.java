@@ -16,11 +16,13 @@ public class EmployeeManagementSystem implements ManagementRepository {
 
     public void displayMenu() {
         System.out.println("\nEmployee Management System Menu:");
+        System.out.println("================================");
         System.out.println("1. Add Employee");
         System.out.println("2. Edit Employee");
         System.out.println("3. Fire Employee");
-        System.out.println("4. List Employees");
-        System.out.println("5. Exit");
+        System.out.println("4. List of Active Employees");
+        System.out.println("5. List of ex-Employees");
+        System.out.println("6. Exit");
     }
 
     public void start() {
@@ -36,13 +38,13 @@ public class EmployeeManagementSystem implements ManagementRepository {
                     editEmployee(scanner);
                     break;
                 case 3:
-                    //listItems();
+                    fireEmployee(scanner);
                     break;
                 case 4:
-                    listEmployees();
+                    listActiveEmployees();
                     break;
                 case 5:
-                    //placeOrder(scanner);
+                    listLeftEmployees();
                     break;
                 case 6:
                     //saveProgress();
@@ -79,15 +81,15 @@ public class EmployeeManagementSystem implements ManagementRepository {
 
             System.out.println("Enter department:");
             String department = scanner.nextLine();
-            scanner.nextLine();
+            //scanner.nextLine();
 
             System.out.println("Enter role:");
             String role = scanner.nextLine();
-            scanner.nextLine();
+            //scanner.nextLine();
 
             System.out.println("Enter salary:");
             double salary = Double.parseDouble(scanner.nextLine());
-            scanner.nextLine();
+            //scanner.nextLine();
 
             newEmployee = new Employee(name, startDate, department, role, salary);
             employees.add(newEmployee);
@@ -111,11 +113,11 @@ public class EmployeeManagementSystem implements ManagementRepository {
 
         System.out.println("Enter new department or press ENTER:");
         String department = scanner.nextLine();
-        scanner.nextLine();
+        //scanner.nextLine();
 
         System.out.println("Enter new role or press ENTER:");
         String role = scanner.nextLine();
-        scanner.nextLine();
+        //scanner.nextLine();
 
         System.out.println("Enter new salary or press ENTER:");
         double salary = scanner.nextDouble();
@@ -138,24 +140,37 @@ public class EmployeeManagementSystem implements ManagementRepository {
     }
 
     @Override
-    public void fireEmployee(int id) {
+    public void fireEmployee(Scanner scanner) {
+        scanner.nextLine();
+
+        System.out.println("Enter employee ID:");
+        int employeeId = Integer.parseInt(scanner.nextLine());
+
         Optional<AbstractEmployee> employee = employees.stream()
-                .filter(e -> e.getId() == id && e.isActive()).findFirst();
+                .filter(e -> e.getId() == employeeId && e.isActive()).findFirst();
         if (employee.isPresent()) {
             AbstractEmployee firedEmployee = employee.get();
             firedEmployee.setActive(false);
             firedEmployee.setEndDate(LocalDate.now());
-            System.out.println("Employee " + id + " has been flagged as no longer working at the company.");
+            System.out.println("Employee " + employeeId + " has been flagged as no longer working at the company.");
         } else {
             System.out.println("Employee not found or already inactive.");
         }
     }
 
     @Override
-    public void listEmployees() {
+    public void listActiveEmployees() {
         System.out.println("List of Active Employees:");
         employees.stream()
-                .filter(EmployeeRepository::isActive)
-                .forEach(EmployeeRepository::getDescription);
+                .filter(AbstractEmployee::isActive)
+                .forEach(AbstractEmployee::getDescription);
+    }
+
+    @Override
+    public void listLeftEmployees() {
+        System.out.println("List of Employees already left:");
+        employees.stream()
+                .filter(e -> !e.isActive())
+                .forEach(AbstractEmployee::getDescription);
     }
 }
