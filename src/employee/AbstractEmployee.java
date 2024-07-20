@@ -1,9 +1,10 @@
 package employee;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public abstract class AbstractEmployee implements EmployeeRepository {
+public abstract class AbstractEmployee implements EmployeeRepository, CsvConvertable {
     protected int id;
     protected String name;
     protected LocalDate startDate;
@@ -33,6 +34,10 @@ public abstract class AbstractEmployee implements EmployeeRepository {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -58,7 +63,7 @@ public abstract class AbstractEmployee implements EmployeeRepository {
     }
 
     public double getSalary() {
-        return (salary*100)/100;
+        return salary;
     }
 
     public void setSalary(double salary) {
@@ -95,7 +100,7 @@ public abstract class AbstractEmployee implements EmployeeRepository {
 
     @Override
     public boolean isActive() {
-        return active && endDate == null;
+        return active || endDate == null;
     }
 
     @Override
@@ -109,5 +114,31 @@ public abstract class AbstractEmployee implements EmployeeRepository {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toCSV() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String endDateStr = (endDate == null) ? "" : endDate.format(formatter);
+        return String.format("%d,%s,%s,%s,%s, %s, %.2f,%b",
+                id, name, startDate.format(formatter), endDateStr, department, role, salary, active);
+    }
+
+    public static AbstractEmployee fromCSV(String csv) {
+        String[] parts = csv.split(",");
+        int id = Integer.parseInt(parts[0]);
+        String name = parts[1];
+        LocalDate startDate = LocalDate.parse(parts[2], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        LocalDate endDate = parts[3].isEmpty() ? null : LocalDate.parse(parts[3], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String department = parts[4];
+        String role = parts[5];
+        double salary = Double.parseDouble(parts[6]);
+        boolean active = Boolean.parseBoolean(parts[7]);
+
+        Employee employee = new Employee(name, startDate, department, role, salary);
+        employee.setId(id);
+        employee.setEndDate(endDate);
+        employee.setActive(active);
+        return employee;
     }
 }

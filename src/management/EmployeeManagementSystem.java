@@ -4,6 +4,7 @@ import employee.AbstractEmployee;
 import employee.Employee;
 import employee.EmployeeRepository;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class EmployeeManagementSystem implements ManagementRepository {
+public class EmployeeManagementSystem implements ManagementRepository, FileOperations {
+    private static final String FILENAME = "employees.csv";
     private List<AbstractEmployee> employees = new ArrayList<>();
 
     public void displayMenu() {
@@ -22,7 +24,9 @@ public class EmployeeManagementSystem implements ManagementRepository {
         System.out.println("3. Fire Employee");
         System.out.println("4. List of Active Employees");
         System.out.println("5. List of ex-Employees");
-        System.out.println("6. Exit");
+        System.out.println("6. Save Progress");
+        System.out.println("7. Load Data");
+        System.out.println("8. Exit");
     }
 
     public void start() {
@@ -47,19 +51,15 @@ public class EmployeeManagementSystem implements ManagementRepository {
                     listLeftEmployees();
                     break;
                 case 6:
-                    //saveProgress();
+                    saveProgress();
                     break;
                 case 7:
-                    //loadInventory();
+                    loadData();
                     break;
                 case 8:
-                    //sortItemsByName();
-                    break;
-                case 9:
-                    //saveProgress();
+                    saveProgress();
                     System.out.println("Exiting...");
                     return;
-
                 default:
                     System.out.println("Invalid choice");
             }
@@ -68,7 +68,7 @@ public class EmployeeManagementSystem implements ManagementRepository {
 
     @Override
     public void addEmployee(Scanner scanner) {
-        Employee newEmployee;
+        AbstractEmployee newEmployee;
         try {
             scanner.nextLine();
 
@@ -173,4 +173,46 @@ public class EmployeeManagementSystem implements ManagementRepository {
                 .filter(e -> !e.isActive())
                 .forEach(AbstractEmployee::getDescription);
     }
+
+    @Override
+    public void saveToFile(String filename) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (AbstractEmployee employee : employees) {
+                writer.write(employee.toCSV());
+                writer.newLine();
+            }
+        }
+    }
+
+    @Override
+    public void loadFromFile(String filename) throws IOException {
+        employees.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                AbstractEmployee employee = Employee.fromCSV(line);
+                employees.add(employee);
+            }
+        }
+    }
+
+    private void saveProgress() {
+        try {
+            saveToFile("employees.csv");
+            System.out.println("Progress saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Could not save employees to file: " + e.getMessage());
+        }
+    }
+
+    private void loadData() {
+        try {
+            loadFromFile("employees.csv");
+            System.out.println("Data loaded successfully.");
+        } catch (IOException e) {
+            System.out.println("Could not load employees from file: " + e.getMessage());
+        }
+    }
+
+
 }

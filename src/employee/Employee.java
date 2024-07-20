@@ -16,11 +16,15 @@ public class Employee extends AbstractEmployee {
     @Override
     public void getDescription() {
         System.out.println("ID: " + getId() + ", Name: " + getName() + ", Start Date: " + getStartDate() + ", End Date: " + getEndDate() + ", Department: " + getDepartment() +
-                ", Role: " + getRole() + ", Salary: " + getFormattedSalary());
+                ", Role: " + getRole() + ", Salary: " + getFormattedSalary() + ", Active: " + isActive());
     }
 
     @Override
     public boolean isActive() {
         return super.isActive();
+    }
+
+    public static AbstractEmployee fromCSV(String csv) {
+        return AbstractEmployee.fromCSV(csv);
     }
 }
