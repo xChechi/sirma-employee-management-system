@@ -172,7 +172,8 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
 
     @Override
     public void saveToFile(String filename) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME))) {
+            writer.write("Id,Name,StartDate,EndDate,Department,Role,Salary\n");
             for (AbstractEmployee employee : employees) {
                 writer.write(employee.toCSV());
                 writer.newLine();
@@ -183,8 +184,9 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
     @Override
     public void loadFromFile(String filename) throws IOException {
         employees.clear();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILENAME))) {
             String line;
+            reader.readLine();
             while ((line = reader.readLine()) != null) {
                 AbstractEmployee employee = Employee.fromCSV(line);
                 employees.add(employee);
@@ -209,6 +211,4 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
             System.out.println("Could not load employees from file: " + e.getMessage());
         }
     }
-
-
 }

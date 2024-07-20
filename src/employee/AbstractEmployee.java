@@ -93,7 +93,6 @@ public abstract class AbstractEmployee implements EmployeeRepository, CsvConvert
         this.startDate = startDate;
     }
 
-    //=================================
     @Override
     public abstract void getDescription();
 
