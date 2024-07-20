@@ -1,6 +1,9 @@
+package employee;
+
 import java.time.LocalDate;
 
 public abstract class AbstractEmployee implements IEmployee {
+    protected int id;
     protected String name;
     protected LocalDate startDate;
     protected LocalDate endDate;
@@ -8,15 +11,21 @@ public abstract class AbstractEmployee implements IEmployee {
     protected String role;
     protected double salary;
     protected boolean active;
+    private static int nextId;
 
-    public AbstractEmployee(String name, LocalDate startDate, LocalDate endDate, String department, String role, double salary) {
+    public AbstractEmployee(String name, LocalDate startDate, String department, String role, double salary) {
+        this.id = generateId();
         this.name = name;
         this.startDate = startDate;
-        this.endDate = endDate;
+        this.endDate = null;
         this.department = department;
         this.role = role;
         this.salary = salary;
         this.active = true;
+    }
+
+    private int generateId() {
+        return nextId++;
     }
 
     public String getName() {
