@@ -1,8 +1,9 @@
 package employee;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-public abstract class AbstractEmployee implements IEmployee {
+public abstract class AbstractEmployee implements EmployeeRepository {
     protected int id;
     protected String name;
     protected LocalDate startDate;
@@ -26,6 +27,10 @@ public abstract class AbstractEmployee implements IEmployee {
 
     private int generateId() {
         return nextId++;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -70,6 +75,9 @@ public abstract class AbstractEmployee implements IEmployee {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+        if (endDate != null) {
+            this.active = false;
+        }
     }
 
     public LocalDate getStartDate() {
@@ -86,5 +94,20 @@ public abstract class AbstractEmployee implements IEmployee {
 
 
     @Override
-    public abstract boolean isActive();
+    public boolean isActive() {
+        return active && endDate == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractEmployee that = (AbstractEmployee) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

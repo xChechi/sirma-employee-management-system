@@ -17,6 +17,6 @@ public class Employee extends AbstractEmployee {
 
     @Override
     public boolean isActive() {
-        return super.active;
+        return super.isActive();
     }
 }

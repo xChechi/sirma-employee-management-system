@@ -1,6 +1,6 @@
 package employee;
 
-public interface IEmployee {
+public interface EmployeeRepository {
     void getDescription();
     boolean isActive();
 }
