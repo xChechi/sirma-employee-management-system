@@ -2,8 +2,6 @@ package management;
 
 import employee.AbstractEmployee;
 import employee.Employee;
-import employee.EmployeeRepository;
-
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +12,7 @@ import java.util.Scanner;
 
 public class EmployeeManagementSystem implements ManagementRepository, FileOperations {
     private static final String FILENAME = "employees.csv";
-    private List<AbstractEmployee> employees = new ArrayList<>();
+    private final List<AbstractEmployee> employees = new ArrayList<>();
 
     public void displayMenu() {
         System.out.println("\nEmployee Management System Menu:");
@@ -81,15 +79,12 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
 
             System.out.println("Enter department:");
             String department = scanner.nextLine();
-            //scanner.nextLine();
 
             System.out.println("Enter role:");
             String role = scanner.nextLine();
-            //scanner.nextLine();
 
             System.out.println("Enter salary:");
             double salary = Double.parseDouble(scanner.nextLine());
-            //scanner.nextLine();
 
             newEmployee = new Employee(name, startDate, department, role, salary);
             employees.add(newEmployee);
@@ -113,14 +108,12 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
 
         System.out.println("Enter new department or press ENTER:");
         String department = scanner.nextLine();
-        //scanner.nextLine();
 
         System.out.println("Enter new role or press ENTER:");
         String role = scanner.nextLine();
-        //scanner.nextLine();
 
         System.out.println("Enter new salary or press ENTER:");
-        double salary = scanner.nextDouble();
+        String salaryInput = scanner.nextLine();
         scanner.nextLine();
 
         Optional<AbstractEmployee> employee = employees.stream()
@@ -132,7 +125,10 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
             if (name != null && !name.isEmpty()) updatedEmployee.setName(name);
             if (department != null && !department.isEmpty()) updatedEmployee.setDepartment(department);
             if (role != null && !role.isEmpty()) updatedEmployee.setRole(role);
-            if (salary >= 0) updatedEmployee.setSalary(salary);
+            if (salaryInput != null && !salaryInput.isEmpty()) {
+                double salary = Double.parseDouble(salaryInput);
+                if (salary >= 0) updatedEmployee.setSalary(salary);
+            }
             System.out.println("Employee " + employeeId + " updated successfully.");
         } else {
             System.out.println("Employee not found or inactive.");
@@ -198,7 +194,7 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
 
     private void saveProgress() {
         try {
-            saveToFile("employees.csv");
+            saveToFile(FILENAME);
             System.out.println("Progress saved successfully.");
         } catch (IOException e) {
             System.out.println("Could not save employees to file: " + e.getMessage());
@@ -207,7 +203,7 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
 
     private void loadData() {
         try {
-            loadFromFile("employees.csv");
+            loadFromFile(FILENAME);
             System.out.println("Data loaded successfully.");
         } catch (IOException e) {
             System.out.println("Could not load employees from file: " + e.getMessage());
