@@ -12,7 +12,7 @@ public abstract class AbstractEmployee implements EmployeeRepository {
     protected String role;
     protected double salary;
     protected boolean active;
-    private static int nextId;
+    private static int nextId = 1;
 
     public AbstractEmployee(String name, LocalDate startDate, String department, String role, double salary) {
         this.id = generateId();
@@ -58,7 +58,7 @@ public abstract class AbstractEmployee implements EmployeeRepository {
     }
 
     public double getSalary() {
-        return salary;
+        return (salary*100)/100;
     }
 
     public void setSalary(double salary) {

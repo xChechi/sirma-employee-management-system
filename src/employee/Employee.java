@@ -9,10 +9,14 @@ public class Employee extends AbstractEmployee {
         super(name, startDate, department, role, salary);
     }
 
+    public String getFormattedSalary() {
+        return String.format("%.2f", salary);
+    }
+
     @Override
     public void getDescription() {
-        System.out.println("employee.Employee ID: " + id + ", Name: " + name + ", Department: " + department +
-                ", Role: " + role + ", Salary: " + salary + ", Active: " + isActive());
+        System.out.println("ID: " + getId() + ", Name: " + getName() + ", Start Date: " + getStartDate() + ", End Date: " + getEndDate() + ", Department: " + getDepartment() +
+                ", Role: " + getRole() + ", Salary: " + getFormattedSalary());
     }
 
     @Override

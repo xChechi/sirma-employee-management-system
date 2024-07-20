@@ -2,9 +2,11 @@ package management;
 
 import employee.Employee;
 
+import java.util.Scanner;
+
 public interface ManagementRepository {
-    void addEmployee(Employee employee);
-    void editEmployee(int id, String name, String department, String role, double salary);
+    void addEmployee(Scanner scanner);
+    void editEmployee(Scanner scanner);
     void fireEmployee(int id);
     void listEmployees();
 }
