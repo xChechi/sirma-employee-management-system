@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class EmployeeManagementSystem implements ManagementRepository, FileOperations {
     private static final String FILENAME = "employees.csv";
@@ -24,6 +25,7 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
         System.out.println("5. List of ex-Employees");
         System.out.println("6. Save Progress");
         System.out.println("7. Load Data");
+        System.out.println("8. Search employee by");
         System.out.println("8. Exit");
     }
 
@@ -55,6 +57,9 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
                     loadData();
                     break;
                 case 8:
+                    searchEmployee(scanner);
+                    break;
+                case 9:
                     saveProgress();
                     System.out.println("Exiting...");
                     return;
@@ -171,6 +176,52 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
     }
 
     @Override
+    public void searchEmployee(Scanner scanner) {
+        scanner.nextLine();
+
+        System.out.println("Select search criteria:");
+        System.out.println("1. Name");
+        System.out.println("2. Department");
+        System.out.println("3. Role");
+
+        int criteriaChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Enter search keyword:");
+        String keyword = scanner.nextLine().toLowerCase();
+
+        List<AbstractEmployee> results;
+
+        switch (criteriaChoice) {
+            case 1:
+                results = employees.stream()
+                        .filter(e -> e.getName().toLowerCase().contains(keyword))
+                        .collect(Collectors.toList());
+                break;
+            case 2:
+                results = employees.stream()
+                        .filter(e -> e.getDepartment().toLowerCase().contains(keyword))
+                        .collect(Collectors.toList());
+                break;
+            case 3:
+                results = employees.stream()
+                        .filter(e -> e.getRole().toLowerCase().contains(keyword))
+                        .collect(Collectors.toList());
+                break;
+            default:
+                System.out.println("Invalid choice");
+                return;
+        }
+
+        if (results.isEmpty()) {
+            System.out.println("No employees found matching the criteria.");
+        } else {
+            System.out.println("Search results:");
+            results.forEach(AbstractEmployee::getDescription);
+        }
+    }
+
+    @Override
     public void saveToFile(String filename) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME))) {
             writer.write("Id,Name,StartDate,EndDate,Department,Role,Salary\n");
@@ -211,4 +262,6 @@ public class EmployeeManagementSystem implements ManagementRepository, FileOpera
             System.out.println("Could not load employees from file: " + e.getMessage());
         }
     }
+
+
 }

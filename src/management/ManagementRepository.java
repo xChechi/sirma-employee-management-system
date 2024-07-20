@@ -1,7 +1,5 @@
 package management;
 
-import employee.Employee;
-
 import java.util.Scanner;
 
 public interface ManagementRepository {
@@ -10,4 +8,5 @@ public interface ManagementRepository {
     void fireEmployee(Scanner scanner);
     void listActiveEmployees();
     void listLeftEmployees();
+    void searchEmployee(Scanner scanner);
 }
